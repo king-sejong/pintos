@@ -1,0 +1,6 @@
+Prototype mismatch: sub main::SIGVTALRM () vs none at /home/jaejin/pintos/src/utils/pintos line 874.
+Constant subroutine SIGVTALRM redefined at /home/jaejin/pintos/src/utils/pintos line 866.
+00000000000i[     ] reading configuration from bochsrc.txt
+00000000000i[     ] installing nogui module as the Bochs GUI
+00000000000i[     ] using log file bochsout.txt
+Use of uninitialized value in numeric le (<=) at /home/jaejin/pintos/src/utils/pintos line 769.
