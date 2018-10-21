@@ -123,6 +123,7 @@ struct thread
     tid_t wc_tid; // waiting child tid 
 
     struct list file_list;
+    int fd_count;
     
     //end
   };
