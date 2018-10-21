@@ -27,59 +27,67 @@ syscall_handler (struct intr_frame *f)
 
   int * esp = f->esp;
   valid_vaddr(esp);
-  //printf ("system call!\n");
-  //printf ("system call no : %d \n", *esp);
+
   switch(*esp){
-    case SYS_HALT :
-      power_off();
+    case SYS_HALT:
+      halt();
       break;
-    case SYS_EXIT :
+    case SYS_EXIT:
       valid_vaddr(esp+1);
-      exit_proc(*(esp+1));
+      exit(*(esp+1));
       break;
-    case SYS_EXEC :
-      //valid_vaddr(esp+1);
-      //valid_vaddr(*(esp+1));
-      //f -> eax = exec_proc(*(esp+1));
+    case SYS_EXEC:
+      valid_vaddr(esp+1);
+      f->eax = exec((const char*) *(esp+1));
       break;
-    
-    case SYS_WAIT :
-      valid_vaddr(esp + 1);
-      f -> eax = process_wait(*(esp+1));
+    case SYS_WAIT:
+      valid_vaddr(esp+1);
+      f->eax = wait((pid_t) *(esp+1));
       break;
-    case SYS_CREATE :
+    case SYS_CREATE:
+      valid_vaddr(esp+1);
+      valid_vaddr(esp+2);
+      f->eax = create((const char*) *(esp+1), (unsigned) *(esp+2));
       break;
-    case SYS_REMOVE :
+    case SYS_REMOVE:
+      valid_vaddr(esp+1);
+      f->eax = remove((const char*) *(esp+1));
       break;
-    case SYS_OPEN :
+    case SYS_OPEN:
+      valid_vaddr(esp+1);
+      f->eax = open((const char*) *(esp+1));
       break;
-    case SYS_FILESIZE :
+    case SYS_FILESIZE:
+      valid_vaddr(esp+1);
+      f->eax = filesize((const char*) *(esp+1));
       break;
-    case SYS_READ :
+    case SYS_READ:
+      valid_vaddr(esp+1);
+      valid_vaddr(esp+2);
+      valid_vaddr(esp+3);
+      f->eax = read((int) *(esp+1), (void*) *(esp+2), (unsigned) *(esp+3));
       break;
-    case SYS_WRITE :
-      write((int)*(uint32_t *)(f->esp+4), (void *)*(uint32_t *)(f->esp + 8), (unsigned)*((uint32_t *)(f->esp + 12)));
+    case SYS_WRITE:
+      valid_vaddr(esp+1);
+      valid_vaddr(esp+2);
+      valid_vaddr(esp+3);
+      f->eax = write((int) *(esp+1), (const void*) *(esp+2), (unsigned) *(esp+3));
       break;
-    case SYS_TELL :
+    case SYS_SEEK:
+      valid_vaddr(esp+1);
+      valid_vaddr(esp+2);
+      seek((int) *(esp+1), (unsigned) *(esp+2));
       break;
-    case SYS_CLOSE :
+    case SYS_TELL:
+      valid_vaddr(esp+1);
+      f->eax = tell((int) *(esp+1));
+      break;
+    case SYS_CLOSE:
+      valid_vaddr(esp+1);
+      close((int) *(esp+1));
       break;
   }
   //thread_exit ();
-}
-
-
-static void
-exit_proc(int status){
-
-
-  struct thread *t = thread_current();
-  
-  t -> exit_status = -1;
-  if(t -> parent -> wc_tid == t -> tid)
-    sema_up(&t -> parent -> child_lock);
-  printf("%s: exit(%d)\n", thread_name(), status);
-  thread_exit();
 }
 
 static void*
@@ -90,33 +98,106 @@ valid_vaddr(const void * va){
   // Assert thread_current() page_dir + vaddr is valid 
 
   if (!is_user_vaddr(va)){
-    exit_proc(-1);
+    exit(-1);
     return 0;
   }
   
   void * kva = pagedir_get_page(thread_current()->pagedir, va);
   
   if(!kva){
-    exit_proc(-1);
+    exit(-1);
     return 0;
   }
   return kva;
 
 }
 
-
-static void*
-exec_proc(char * fn){
-  
-  return (void*)0;
+void
+halt (void){
+  power_off();
 }
 
-int write (int fd, const void *buffer, unsigned size) {
+void
+exit (int status){
+  struct thread *t = thread_current();
+  
+  t -> exit_status = -1;
+  if(t -> parent -> wc_tid == t -> tid)
+    sema_up(&t -> parent -> child_lock);
+  printf("%s: exit(%d)\n", thread_name(), status);
+  thread_exit();
+}
 
+pid_t
+exec (const char *file){
+  return process_execute(file);
+}
 
-  if (fd == 1) {
+int
+wait(pid_t pid){
+  return process_wait(pid);
+}
+
+bool
+create(const char *file, unsigned initial_size){
+
+  return filesys_create(file, initial_size);
+}
+
+bool
+remove(const char *file){
+  return filesys_remove(file);
+}
+
+int
+open(const char *file){
+  struct file *f = filesys_open(file);
+  struct file_elem *felem= (struct file_elem *) malloc(sizeof(struct file_elem));
+
+  felem->file=f;
+  list_push_back(&thread_current()->file_list, &felem->f_elem);
+  return felem->fd;
+}
+
+int
+filesize(int fd){
+  return-1;
+}
+
+int
+read(int fd, void *buffer, unsigned size){
+  int i;
+  if(fd == 0){
+    for( i=0;i<size;i++){
+      *(char *)(buffer+i)=input_getc();
+      return size;
+    }
+  }
+  return -1;
+}
+
+int
+write(int fd, const void *buffer, unsigned size){
+    if (fd == 1) {
     putbuf(buffer, size);
     return size;
   }
   return -1; 
+}
+
+void
+seek(int fd, unsigned position){
+  struct file_elem *felem= find_file(fd);
+  return file_seek(felem->file);
+}
+
+unsigned
+tell(int fd){
+  struct file_elem *felem= find_file(fd);
+  return file_tell(felem->file);
+}
+
+void
+close(int fd){
+  
 }

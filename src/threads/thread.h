@@ -14,6 +14,13 @@ enum thread_status
     THREAD_DYING        /* About to be destroyed. */
   };
 
+  struct file_elem
+  {
+    int fd;
+    struct file *file;
+    struct list_elem f_elem;
+  };
+
 /* Thread identifier type.
    You can redefine this to whatever type you like. */
 typedef int tid_t;
@@ -114,6 +121,8 @@ struct thread
     int exit_status; // -1 exit by error, 0 exit by program normal exit.
     struct list_elem elem_for_parent;  // used in parent thread child_proc list
     tid_t wc_tid; // waiting child tid 
+
+    struct list file_list;
     
     //end
   };
@@ -161,4 +170,6 @@ int thread_max_priority(void);
 
 bool lock_compare_priority(const struct list_elem *, const struct list_elem *, void *aux UNUSED);
 void thread_set_priority_advanced(int, struct thread *);
+
+struct file_elem *find_file(int fd);
 #endif /* threads/thread.h */
