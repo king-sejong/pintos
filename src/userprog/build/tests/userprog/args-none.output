@@ -1,11 +1,11 @@
-Copying tests/userprog/args-none into /tmp/hYHDXGUyRt.dsk...
-Writing command line to /tmp/x61lYKkU6b.dsk...
-qemu-system-i386 -hda /tmp/x61lYKkU6b.dsk -hdb /tmp/pdSW8VDLFg.dsk -hdc /tmp/hYHDXGUyRt.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/args-none into /tmp/sEsoZeCZeO.dsk...
+Writing command line to /tmp/o0i6omMuzW.dsk...
+qemu-system-i386 -hda /tmp/o0i6omMuzW.dsk -hdb /tmp/t7eljOgVdf.dsk -hdc /tmp/sEsoZeCZeO.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put args-none run args-none
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  172,032,000 loops/s.
+Calibrating timer...  209,510,400 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 105 sector (52 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -13,8 +13,19 @@ Formatting file system...done.
 Boot complete.
 Putting 'args-none' into the file system...
 Executing 'args-none':
-filename : args-none
-2 : args-none
-here11here12here13here14hh7hh6hh5hh4hh3hh2hh1hh0hh-1here15here13here14hh7hh6hh5hh4hh3hh2hh1hh0hh-1here15here13here14hh7hh6hh5hh4hh3hh2hh1hh0hh-1here15here13here14here13here14here1here2here3success? : YESbfffffe0                       00-00 00 00 01 00 00 00 f6 |       .........|
-bffffff0  ff ff bf f6 ff ff bf 00-00 73 2d 6e 6f 6e 00 00 |.........s-non..|
-system call!
+(args) begin
+(args) argc = 1
+(args) argv[0] = 'args-none'
+(args) argv[1] = null
+(args) end
+args-none: exit(0)
+Execution of 'args-none' complete.
+Timer: 67 ticks
+Thread: 30 idle ticks, 37 kernel ticks, 0 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 62 reads, 218 writes
+hd1:0: 105 reads, 0 writes
+Console: 855 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

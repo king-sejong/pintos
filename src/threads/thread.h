@@ -105,6 +105,17 @@ struct thread
     struct list lock_list;
     struct lock *waiting_lock;
     int donated_times;
+    
+    //start - project2 modified
+    
+    struct thread * parent; 
+    struct list child_proc; // list of child process.
+    struct semaphore *child_lock; // lock which is used by children.
+    int exit_status; // -1 exit by error, 0 exit by program normal exit.
+    struct list_elem elem_for_parent;  // used in parent thread child_proc list
+    tid_t wc_tid; // waiting child tid 
+    
+    //end
   };
 
 /* If false (default), use round-robin scheduler.
@@ -149,5 +160,5 @@ bool thread_compare_priority(const struct list_elem *, const struct list_elem *,
 int thread_max_priority(void);
 
 bool lock_compare_priority(const struct list_elem *, const struct list_elem *, void *aux UNUSED);
-
+void thread_set_priority_advanced(int, struct thread *);
 #endif /* threads/thread.h */

@@ -224,7 +224,9 @@ thread_create (const char *name, int priority,
   struct switch_entry_frame *ef;
   struct switch_threads_frame *sf;
   tid_t tid;
-
+  
+  //
+  // 
   ASSERT (function != NULL);
 
   /* Allocate thread. */
@@ -236,6 +238,8 @@ thread_create (const char *name, int priority,
   init_thread (t, name, priority);
   tid = t->tid = allocate_tid ();
 
+
+  list_push_back (&running_thread()->child_proc, &t->elem_for_parent);
   /* Stack frame for kernel_thread(). */
   kf = alloc_frame (t, sizeof *kf);
   kf->eip = NULL;
@@ -369,7 +373,11 @@ thread_exit (void)
 #ifdef USERPROG
   process_exit ();
 #endif
-
+ 
+  while(!list_empty(&thread_current()->child_proc)){
+      struct proc_file *c = list_entry (list_pop_front(&thread_current()->child_proc), struct thread, elem_for_parent);
+      free(c);
+    }
   /* Just set our status to dying and schedule another process.
      We will be destroyed during the call to schedule_tail(). */
   intr_disable ();
@@ -554,6 +562,14 @@ init_thread (struct thread *t, const char *name, int priority)
   t->magic = THREAD_MAGIC;
   list_init(&t->lock_list);
   t->donated_times = 0;
+
+  
+  list_init(&t->child_proc);
+  sema_init(&t->child_lock, 0);
+  t-> wc_tid = NULL;
+
+  t-> parent = running_thread();
+  t-> exit_status = 1;
 }
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and

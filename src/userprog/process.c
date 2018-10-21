@@ -98,19 +98,25 @@ start_process (void *f_name)
   
   // modified-part-start
   if (success){
-    printf("success? : YES\n");
+    //printf("success? : YES\n");
 
     argument_pass(arg , count , &if_.esp);
-    hex_dump((uintptr_t)if_.esp, if_.esp, (size_t)(PHYS_BASE - if_.esp), true);
+    //hex_dump((uintptr_t)if_.esp, if_.esp, (size_t)(PHYS_BASE - if_.esp), true);
   }
   // modifiled-part-end
 
   /* If load failed, quit. */
   palloc_free_page (f_name);
   
-  if (!success) 
+  if (!success){
+    thread_current()->exit_status = 0;
     thread_exit ();
+  }
+  else {
+    thread_current()->exit_status = 0;
+    sema_up(&thread_current()->parent->child_lock);
 
+  }
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
      threads/intr-stubs.S).  Because intr_exit takes all of its
@@ -175,12 +181,33 @@ argument_pass (char **parse, int count, void **esp){
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
-{ 
-  while(true){
-    // infinite loop ??
+process_wait (tid_t child_tid) 
+{
+
+  struct thread *t = thread_current();
+
+  struct list_elem *e;
+
+  struct thread *child=NULL;
+  struct list_elem *e2=NULL;
+
+  for (e = list_begin (&t->child_proc); e != list_end (&t->child_proc); e = list_next (e)){
+    struct thread *c = list_entry (e, struct thread, elem_for_parent);
+      if(c->tid == child_tid){
+        child = c;
+        e2 = e;
+      }
   }
-  return -1;
+  
+  if(!child || !e2) return -1;
+
+  t->wc_tid = child_tid;
+  sema_down(&t->child_lock);
+   
+  // child done.
+  //printf("e2 : %p\n",e2);
+  //list_remove(e2); < -- page fault happend. But don't know why.
+  return child -> exit_status;
 }
 
 /* Free the current process's resources. */
@@ -324,7 +351,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   
   file_name_r = strtok_r(file_name_r, " ", &next);
   
-  printf("2 : %s\n", file_name_r);
+  //printf("2 : %s\n", file_name_r);
   file = filesys_open (file_name_r);
   //free(file_name_r);
   
@@ -549,7 +576,6 @@ setup_stack (void **esp)
         palloc_free_page (kpage);
       }
     }
-  printf("%s",success);
   return success;
 }
 

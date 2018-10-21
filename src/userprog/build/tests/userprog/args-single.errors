@@ -3,4 +3,3 @@ Constant subroutine SIGVTALRM redefined at /home/jaejin/pintos/src/utils/pintos 
 Could not access KVM kernel module: No such file or directory
 failed to initialize KVM: No such file or directory
 Back to tcg accelerator.
-Killed
