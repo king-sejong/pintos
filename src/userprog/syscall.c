@@ -140,28 +140,48 @@ wait(pid_t pid){
 
 bool
 create(const char *file, unsigned initial_size){
-
+  if(file==NULL)
+    return false;
   return filesys_create(file, initial_size);
 }
 
 bool
 remove(const char *file){
+  if(file==NULL)
+    return false;
   return filesys_remove(file);
 }
 
 int
 open(const char *file){
   struct file *f = filesys_open(file);
+  
+  if(f == NULL){
+    exit(-1);
+    return false;
+  }
+
   struct file_elem *felem= (struct file_elem *) malloc(sizeof(struct file_elem));
 
+  if(felem==NULL)
+    return -1;
+
+
   felem->file=f;
+  felem->fd =thread_current()->fd_count;
+  thread_current()->fd_count++;
   list_push_back(&thread_current()->file_list, &felem->f_elem);
   return felem->fd;
 }
 
 int
 filesize(int fd){
-  return-1;
+  struct file_elem *felem= find_file(fd);
+
+  if(felem==NULL)
+    return -1;
+
+  return file_length(felem->file);
 }
 
 int
@@ -173,31 +193,49 @@ read(int fd, void *buffer, unsigned size){
       return size;
     }
   }
-  return -1;
+
+  struct file_elem *felem= find_file(fd);
+  if(felem==NULL)
+      return -1;
+  return file_read(felem->file, buffer, size);
 }
 
 int
 write(int fd, const void *buffer, unsigned size){
-    if (fd == 1) {
+  if(fd==0)
+    return -1;
+
+  if (fd == 1) {
     putbuf(buffer, size);
     return size;
   }
-  return -1; 
+
+  struct file_elem *felem= find_file(fd);
+  if(felem==NULL)
+    return -1;
+  return file_write(felem->file, buffer, size); 
 }
 
 void
 seek(int fd, unsigned position){
   struct file_elem *felem= find_file(fd);
+  if(felem==NULL)
+    return -1;
   return file_seek(felem->file);
 }
 
 unsigned
 tell(int fd){
   struct file_elem *felem= find_file(fd);
+  if(felem==NULL)
+    return -1;
   return file_tell(felem->file);
 }
 
 void
 close(int fd){
-  
+  struct file_elem *felem= find_file(fd);
+  if(felem==NULL)
+    return -1;
+  return file_close(felem->file);
 }
