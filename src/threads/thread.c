@@ -687,4 +687,17 @@ allocate_tid (void)
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
 
+struct file_elem*
+find_file(int fd){
+  struct file_elem *felem;
+  struct list_elem *e;
+  struct list *flist = &thread_current()->file_list;
 
+  for(e=list_begin(flist);e !=list_end(flist);e=list_next(e)){
+   
+      felem=list_entry(e, struct file_elem, f_elem);
+      if(felem->fd==fd)
+        return felem;      
+    }
+  return NULL;
+}
