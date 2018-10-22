@@ -1,11 +1,11 @@
-Copying tests/filesys/base/sm-full into /tmp/JTkyEUbZYK.dsk...
-Writing command line to /tmp/42FdgQI75p.dsk...
-qemu-system-i386 -hda /tmp/42FdgQI75p.dsk -hdb /tmp/9D2ZjkYEG6.dsk -hdc /tmp/JTkyEUbZYK.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/sm-full into /tmp/u060Ug8W5_.dsk...
+Writing command line to /tmp/NVFvOb8CDw.dsk...
+qemu-system-i386 -hda /tmp/NVFvOb8CDw.dsk -hdb /tmp/Y6AiLeasJD.dsk -hdc /tmp/u060Ug8W5_.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put sm-full run sm-full
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  13,094,400 loops/s.
+Calibrating timer...  157,081,600 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 109 sector (54 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -17,15 +17,19 @@ Executing 'sm-full':
 (sm-full) create "quux"
 (sm-full) open "quux"
 (sm-full) writing "quux"
-(sm-full) write 5678 bytes at offset 0 in "quux" failed: FAILED
-sm-full: exit(1)
+(sm-full) close "quux"
+(sm-full) open "quux" for verification
+(sm-full) verified contents of "quux"
+(sm-full) close "quux"
+(sm-full) end
+sm-full: exit(0)
 Execution of 'sm-full' complete.
-Timer: 86 ticks
-Thread: 30 idle ticks, 55 kernel ticks, 1 user ticks
+Timer: 65 ticks
+Thread: 30 idle ticks, 32 kernel ticks, 3 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 63 reads, 226 writes
+hd0:1: 106 reads, 254 writes
 hd1:0: 109 reads, 0 writes
-Console: 902 characters output
+Console: 977 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

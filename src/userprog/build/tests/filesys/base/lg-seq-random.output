@@ -1,6 +1,6 @@
-Copying tests/filesys/base/lg-seq-random into /tmp/6XlEk4mk6P.dsk...
-Writing command line to /tmp/YRK8AUTix_.dsk...
-qemu-system-i386 -hda /tmp/YRK8AUTix_.dsk -hdb /tmp/qWBtz8qPu1.dsk -hdc /tmp/6XlEk4mk6P.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/lg-seq-random into /tmp/878U0zQYlb.dsk...
+Writing command line to /tmp/VtDFufVsl9.dsk...
+qemu-system-i386 -hda /tmp/VtDFufVsl9.dsk -hdb /tmp/4PMqpGIA3J.dsk -hdc /tmp/878U0zQYlb.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put lg-seq-random run lg-seq-random
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -15,17 +15,13 @@ Putting 'lg-seq-random' into the file system...
 Executing 'lg-seq-random':
 (lg-seq-random) begin
 (lg-seq-random) create "nibble"
-(lg-seq-random) open "nibble"
-(lg-seq-random) writing "nibble"
-(lg-seq-random) write 717 bytes at offset 0 in "nibble" failed: FAILED
-lg-seq-random: exit(1)
 Execution of 'lg-seq-random' complete.
-Timer: 72 ticks
-Thread: 30 idle ticks, 41 kernel ticks, 1 user ticks
+Timer: 66 ticks
+Thread: 30 idle ticks, 32 kernel ticks, 4 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 63 reads, 226 writes
+hd0:1: 66 reads, 274 writes
 hd1:0: 109 reads, 0 writes
-Console: 976 characters output
+Console: 819 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

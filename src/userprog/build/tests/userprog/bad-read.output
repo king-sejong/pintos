@@ -1,11 +1,11 @@
-Copying tests/userprog/bad-read into /tmp/fZ9ifrtmau.dsk...
-Writing command line to /tmp/nHI3bri_o4.dsk...
-qemu-system-i386 -hda /tmp/nHI3bri_o4.dsk -hdb /tmp/GU42g93LsF.dsk -hdc /tmp/fZ9ifrtmau.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/bad-read into /tmp/lLQSJDZUSV.dsk...
+Writing command line to /tmp/7Zy3ploNcB.dsk...
+qemu-system-i386 -hda /tmp/7Zy3ploNcB.dsk -hdb /tmp/kF3pKQHL2p.dsk -hdc /tmp/lLQSJDZUSV.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put bad-read run bad-read
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  207,872,000 loops/s.
+Calibrating timer...  209,510,400 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 105 sector (52 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -18,8 +18,8 @@ Executing 'bad-read':
 (bad-read) should have exited with -1: FAILED
 bad-read: exit(1)
 Execution of 'bad-read' complete.
-Timer: 64 ticks
-Thread: 30 idle ticks, 33 kernel ticks, 1 user ticks
+Timer: 62 ticks
+Thread: 30 idle ticks, 31 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 62 reads, 218 writes
 hd1:0: 105 reads, 0 writes

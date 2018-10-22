@@ -102,6 +102,15 @@ struct thread
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
+    struct thread * parent; 
+    struct list child_proc; // list of child process.
+    struct semaphore *child_lock; // lock which is used by children.
+    int exit_status; // -1 exit by error, 0 exit by program normal exit.
+    struct list_elem elem_for_parent;  // used in parent thread child_proc list
+    tid_t wc_tid; // waiting child tid 
+    bool used; // thread used.
+    struct list file_list;
+    int fd_count;
 #endif
 
     /* Owned by thread.c. */
@@ -115,15 +124,7 @@ struct thread
     
     //start - project2 modified
     
-    struct thread * parent; 
-    struct list child_proc; // list of child process.
-    struct semaphore *child_lock; // lock which is used by children.
-    int exit_status; // -1 exit by error, 0 exit by program normal exit.
-    struct list_elem elem_for_parent;  // used in parent thread child_proc list
-    tid_t wc_tid; // waiting child tid 
 
-    struct list file_list;
-    int fd_count;
     
     //end
   };
@@ -173,4 +174,6 @@ bool lock_compare_priority(const struct list_elem *, const struct list_elem *, v
 void thread_set_priority_advanced(int, struct thread *);
 
 struct file_elem *find_file(int fd);
+
+struct thread *find_thread(tid_t tid);
 #endif /* threads/thread.h */

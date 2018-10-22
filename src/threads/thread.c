@@ -240,6 +240,8 @@ thread_create (const char *name, int priority,
 
 
   list_push_back (&running_thread()->child_proc, &t->elem_for_parent);
+  t->used = false;
+  
   /* Stack frame for kernel_thread(). */
   kf = alloc_frame (t, sizeof *kf);
   kf->eip = NULL;
@@ -373,11 +375,11 @@ thread_exit (void)
 #ifdef USERPROG
   process_exit ();
 #endif
- 
+ /*
   while(!list_empty(&thread_current()->child_proc)){
-      struct proc_file *c = list_entry (list_pop_front(&thread_current()->child_proc), struct thread, elem_for_parent);
+      struct thread *c = list_entry (list_pop_front(&thread_current()->child_proc), struct thread, elem_for_parent);
       free(c);
-    }
+    }*/
   /* Just set our status to dying and schedule another process.
      We will be destroyed during the call to schedule_tail(). */
   intr_disable ();
@@ -570,6 +572,8 @@ init_thread (struct thread *t, const char *name, int priority)
 
   t-> parent = running_thread();
   t-> exit_status = 1;
+
+
   list_init(&t->file_list);
   t-> fd_count=2;
 }
@@ -701,5 +705,22 @@ find_file(int fd){
       if(felem->fd==fd)
         return felem;      
     }
+  return NULL;
+}
+
+
+
+struct thread *find_thread(tid_t tid){
+
+  struct thread *t=NULL;
+  struct list_elem *telem;
+  struct thread *curr = thread_current();
+
+  for (telem = list_begin(&curr->child_proc); telem != list_end(&curr->child_proc); telem = list_next(telem)){
+    
+    t = list_entry(telem,struct thread,elem_for_parent);
+    if(t->tid == tid)
+      return t;
+  }
   return NULL;
 }

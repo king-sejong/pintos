@@ -1,6 +1,6 @@
-Copying tests/userprog/args-none into /tmp/sEsoZeCZeO.dsk...
-Writing command line to /tmp/o0i6omMuzW.dsk...
-qemu-system-i386 -hda /tmp/o0i6omMuzW.dsk -hdb /tmp/t7eljOgVdf.dsk -hdc /tmp/sEsoZeCZeO.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/args-none into /tmp/NQcmB5vFB6.dsk...
+Writing command line to /tmp/LvINtrJAcw.dsk...
+qemu-system-i386 -hda /tmp/LvINtrJAcw.dsk -hdb /tmp/YfxDTNtAq0.dsk -hdc /tmp/NQcmB5vFB6.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put args-none run args-none
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -13,19 +13,17 @@ Formatting file system...done.
 Boot complete.
 Putting 'args-none' into the file system...
 Executing 'args-none':
-(args) begin
-(args) argc = 1
-(args) argv[0] = 'args-none'
-(args) argv[1] = null
-(args) end
-args-none: exit(0)
-Execution of 'args-none' complete.
-Timer: 67 ticks
-Thread: 30 idle ticks, 37 kernel ticks, 0 user ticks
+Kernel PANIC at ../../lib/kernel/list.c:84 in list_next(): assertion `is_head (elem) || is_interior (elem)' failed.
+Call stack: 0xc0107719 0xc0107b63 0xc0107c8f 0xc0108041 0xc0102b44 0xc0109f6e 0xc01011e5.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 61 ticks
+Thread: 30 idle ticks, 31 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 62 reads, 218 writes
 hd1:0: 105 reads, 0 writes
-Console: 855 characters output
+Console: 1070 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

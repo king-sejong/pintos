@@ -38,7 +38,7 @@ process_execute (const char *file_name)
   strlcpy(str, file_name, strlen(file_name)+1);
 
   file_name_r = strtok_r(str, " ", &next);
-  //printf("fnr : %s", *file_name_r);
+  //printf("fnr : %s", *file_name);
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
@@ -51,7 +51,17 @@ process_execute (const char *file_name)
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (file_name_r, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
-    palloc_free_page (fn_copy); 
+    palloc_free_page (fn_copy);
+
+
+  struct thread* child = find_thread (tid);
+  sema_down (&child->child_lock);
+  //sema_down(&thread_current()->child_lock);
+
+  //if(!thread_current()->success)
+  //  return -1;
+
+ 
   return tid;
 }
 
@@ -97,26 +107,26 @@ start_process (void *f_name)
   success = load (f_name, &if_.eip, &if_.esp);
   
   // modified-part-start
-  if (success){
     //printf("success? : YES\n");
 
-    argument_pass(arg , count , &if_.esp);
     //hex_dump((uintptr_t)if_.esp, if_.esp, (size_t)(PHYS_BASE - if_.esp), true);
-  }
   // modifiled-part-end
 
   /* If load failed, quit. */
   palloc_free_page (f_name);
   
   if (!success){
-    thread_current()->exit_status = 0;
+    
+    thread_current()->exit_status = -1;
+    sema_up(&thread_current()->child_lock);
     thread_exit ();
   }
-  else {
-    thread_current()->exit_status = 0;
-    sema_up(&thread_current()->parent->child_lock);
-
+  else { 
+  argument_pass(arg , count , &if_.esp);
+  thread_current()->exit_status = 0;
+  sema_up(&thread_current()->child_lock);
   }
+  
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
      threads/intr-stubs.S).  Because intr_exit takes all of its
@@ -199,14 +209,18 @@ process_wait (tid_t child_tid)
       }
   }
   
-  if(!child || !e2) return -1;
+  if(!child || !e2 || child->used || child->exit_status <0 ) return -1;
 
   t->wc_tid = child_tid;
-  sema_down(&t->child_lock);
+    
+
+  //printf("awewerw : %d\n",child->tid);
+  if(!child->used) sema_down(&t->child_lock);
    
   // child done.
   //printf("e2 : %p\n",e2);
-  //list_remove(e2); < -- page fault happend. But don't know why.
+  //printf("awewerw : %d\n",child->tid);
+  //list_remove(&child->elem_for_parent); //< -- page fault happend. But don't know why.
   return child -> exit_status;
 }
 
@@ -219,6 +233,9 @@ process_exit (void)
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
+  //if((int)curr->exit_status == 1)
+  //  exit(-1);
+
   pd = curr->pagedir;
   if (pd != NULL) 
     {

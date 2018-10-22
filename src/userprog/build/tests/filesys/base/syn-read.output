@@ -1,12 +1,12 @@
-Copying tests/filesys/base/syn-read into /tmp/iWghNNHBL5.dsk...
-Copying tests/filesys/base/child-syn-read into /tmp/iWghNNHBL5.dsk...
-Writing command line to /tmp/DiTqs3RZHe.dsk...
-qemu-system-i386 -hda /tmp/DiTqs3RZHe.dsk -hdb /tmp/gHnFxMucdr.dsk -hdc /tmp/iWghNNHBL5.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/syn-read into /tmp/pLa70Uqb69.dsk...
+Copying tests/filesys/base/child-syn-read into /tmp/pLa70Uqb69.dsk...
+Writing command line to /tmp/Ed5qdjYbJ6.dsk...
+qemu-system-i386 -hda /tmp/Ed5qdjYbJ6.dsk -hdb /tmp/1xctivYeqh.dsk -hdc /tmp/pLa70Uqb69.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put syn-read put child-syn-read run syn-read
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  169,574,400 loops/s.
+Calibrating timer...  212,582,400 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 230 sector (115 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -17,15 +17,26 @@ Putting 'child-syn-read' into the file system...
 Executing 'syn-read':
 (syn-read) begin
 (syn-read) create "data"
-(syn-read) create "data": FAILED
-syn-read: exit(1)
+(syn-read) open "data"
+(syn-read) write "data"
+(syn-read) close "data"
+(syn-read) exec child 1 of 10: "child-syn-read 0"
+(syn-read) exec child 2 of 10: "child-syn-read 1"
+(syn-read) exec child 3 of 10: "child-syn-read 2"
+(syn-read) exec child 4 of 10: "child-syn-read 3"
+(syn-read) exec child 5 of 10: "child-syn-read 4"
+(syn-read) exec child 6 of 10: "child-syn-read 5"
+(syn-read) exec child 7 of 10: "child-syn-read 6"
+(syn-read) exec child 8 of 10: "child-syn-read 7"
+(syn-read) exec child 9 of 10: "child-syn-read 8"
+(syn-read) exec child 10 of 10: "child-syn-read 9"
 Execution of 'syn-read' complete.
-Timer: 157 ticks
-Thread: 30 idle ticks, 128 kernel ticks, 0 user ticks
+Timer: 83 ticks
+Thread: 30 idle ticks, 52 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 91 reads, 470 writes
+hd0:1: 150 reads, 478 writes
 hd1:0: 230 reads, 0 writes
-Console: 904 characters output
+Console: 1424 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

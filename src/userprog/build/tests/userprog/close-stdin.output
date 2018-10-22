@@ -1,11 +1,11 @@
-Copying tests/userprog/close-stdin into /tmp/k324C1RNxQ.dsk...
-Writing command line to /tmp/F2eOgbyB6s.dsk...
-qemu-system-i386 -hda /tmp/F2eOgbyB6s.dsk -hdb /tmp/8vRO79zKHK.dsk -hdc /tmp/k324C1RNxQ.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/close-stdin into /tmp/ghfTFl56Ak.dsk...
+Writing command line to /tmp/K2Wb4N6W7S.dsk...
+qemu-system-i386 -hda /tmp/K2Wb4N6W7S.dsk -hdb /tmp/DqcA_wGNIO.dsk -hdc /tmp/ghfTFl56Ak.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put close-stdin run close-stdin
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  207,872,000 loops/s.
+Calibrating timer...  209,510,400 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 105 sector (52 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -14,15 +14,14 @@ Boot complete.
 Putting 'close-stdin' into the file system...
 Executing 'close-stdin':
 (close-stdin) begin
-(close-stdin) end
-close-stdin: exit(0)
+close-stdin: exit(-1)
 Execution of 'close-stdin' complete.
-Timer: 65 ticks
-Thread: 30 idle ticks, 35 kernel ticks, 0 user ticks
+Timer: 63 ticks
+Thread: 30 idle ticks, 33 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 62 reads, 218 writes
 hd1:0: 105 reads, 0 writes
-Console: 814 characters output
+Console: 797 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

@@ -1,11 +1,11 @@
-Copying tests/filesys/base/syn-remove into /tmp/HfzMM8F0sL.dsk...
-Writing command line to /tmp/0L3D_OmvKy.dsk...
-qemu-system-i386 -hda /tmp/0L3D_OmvKy.dsk -hdb /tmp/EVoxlvTGMi.dsk -hdc /tmp/HfzMM8F0sL.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/syn-remove into /tmp/UmGoz5MuXb.dsk...
+Writing command line to /tmp/8h35kS5C6G.dsk...
+qemu-system-i386 -hda /tmp/8h35kS5C6G.dsk -hdb /tmp/KCoCKjXX77.dsk -hdc /tmp/UmGoz5MuXb.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put syn-remove run syn-remove
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  160,153,600 loops/s.
+Calibrating timer...  211,763,200 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 110 sector (55 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -15,15 +15,32 @@ Putting 'syn-remove' into the file system...
 Executing 'syn-remove':
 (syn-remove) begin
 (syn-remove) create "deleteme"
-(syn-remove) create "deleteme": FAILED
+(syn-remove) open "deleteme"
+(syn-remove) remove "deleteme"
+(syn-remove) write "deleteme"
+(syn-remove) seek "deleteme" to 0
+(syn-remove) read "deleteme"
+(syn-remove) 110 bytes read starting at offset 0 in "deleteme" differ from expected.
+(syn-remove) Showing first differing 64 bytes.
+(syn-remove) Data actually read:
+00000000  89 41 a3 37 5d 3a 8a 06-1e 67 57 6e 92 6d c7 1a |.A.7]:...gWn.m..|
+00000010  7f a3 f0 cc eb 97 45 2b-4d 32 27 96 5f 9e a8 cc |......E+M2'._...|
+00000020  75 07 6d 9f b9 c5 41 7a-a5 cb 30 fc 22 19 8b 34 |u.m...Az..0."..4|
+00000030  98 2d bb 62 9e c0 4b 4f-8b 05 a0 71 08 50 92 a0 |.-.b..KO...q.P..|
+(syn-remove) Expected data:
+00000000  de 18 89 41 a3 37 5d 3a-8a 06 1e 67 57 6e 92 6d |...A.7]:...gWn.m|
+00000010  c7 1a 7f a3 f0 cc eb 97-45 2b 4d 32 27 96 5f 9e |........E+M2'._.|
+00000020  a8 cc 75 07 6d 9f b9 c5-41 7a a5 cb 30 fc 22 19 |..u.m...Az..0.".|
+00000030  8b 34 98 2d bb 62 9e c0-4b 4f 8b 05 a0 71 08 50 |.4.-.b..KO...q.P|
+(syn-remove) 110 bytes read starting at offset 0 in "deleteme" differ from expected: FAILED
 syn-remove: exit(1)
 Execution of 'syn-remove' complete.
-Timer: 105 ticks
-Thread: 30 idle ticks, 74 kernel ticks, 1 user ticks
+Timer: 76 ticks
+Thread: 30 idle ticks, 43 kernel ticks, 3 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 64 reads, 228 writes
+hd0:1: 98 reads, 239 writes
 hd1:0: 110 reads, 0 writes
-Console: 860 characters output
+Console: 1874 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

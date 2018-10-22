@@ -1,12 +1,12 @@
-Copying tests/userprog/exec-once into /tmp/uxB4CMhLfL.dsk...
-Copying tests/userprog/child-simple into /tmp/uxB4CMhLfL.dsk...
-Writing command line to /tmp/Rd0uCZonNq.dsk...
-qemu-system-i386 -hda /tmp/Rd0uCZonNq.dsk -hdb /tmp/Mp4Q1sf2vY.dsk -hdc /tmp/uxB4CMhLfL.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-once into /tmp/JzATSgnrxW.dsk...
+Copying tests/userprog/child-simple into /tmp/JzATSgnrxW.dsk...
+Writing command line to /tmp/4R78Sike1q.dsk...
+qemu-system-i386 -hda /tmp/4R78Sike1q.dsk -hdb /tmp/JwT2reuidB.dsk -hdc /tmp/JzATSgnrxW.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-once put child-simple run exec-once
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  210,534,400 loops/s.
+Calibrating timer...  231,833,600 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 209 sector (104 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -16,15 +16,13 @@ Putting 'exec-once' into the file system...
 Putting 'child-simple' into the file system...
 Executing 'exec-once':
 (exec-once) begin
-(exec-once) end
-exec-once: exit(0)
 Execution of 'exec-once' complete.
-Timer: 92 ticks
-Thread: 30 idle ticks, 61 kernel ticks, 1 user ticks
+Timer: 80 ticks
+Thread: 30 idle ticks, 50 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 89 reads, 428 writes
+hd0:1: 93 reads, 428 writes
 hd1:0: 209 reads, 0 writes
-Console: 863 characters output
+Console: 828 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...
