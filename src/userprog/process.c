@@ -119,11 +119,7 @@ start_process (void *f_name)
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (f_name, &if_.eip, &if_.esp);
   
-  // modified-part-start
-  //printf("success? : YES\n");
-
     //hex_dump((uintptr_t)if_.esp, if_.esp, (size_t)(PHYS_BASE - if_.esp), true);
-  // modifiled-part-end
 
   /* If load failed, quit. */
   palloc_free_page (f_name);
@@ -219,6 +215,7 @@ process_wait (tid_t child_tid)
       if(c->tid == child_tid){
         child = c;
         e2 = e;
+        break;
       }
   }
   
@@ -226,20 +223,15 @@ process_wait (tid_t child_tid)
 
   //t->wc_tid = child_tid;
    
-  child->running = true;
+  //child->running = true;
   sema_down (&child->child_exit);
 
   //printf("checkpoint child_vaddr : %p\n",child);
   //printf("checkpoint child_exit_status : %p\n",child->exit_status);
   //printf("checkpoint child_runnin : %d\n",child->running);
-  child->running = false; 
-
   //printf("awewerw : %d\n",child->tid);
-  //if(!child->used) sema_down(&t->child_lock);
    
   // child done.
-  //printf("e2 : %p\n",e2);
-  //printf("awewerw : %d\n",child->tid);
   list_remove(&child->elem_for_parent); //< -- page fault happend. But don't know why.
   sema_up(&child->child_before_exit);
   

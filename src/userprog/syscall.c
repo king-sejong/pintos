@@ -145,14 +145,6 @@ exit (int status){
 
 pid_t
 exec (const char *file_name){
-
-/*
-  char * fn = malloc(strlen(file_name)+1);
-  char * next;
-  strlcpy(fn, file_name, strlen(file_name)+1);
-  fn = strtok_r(fn, " ", &next);
-  struct file* f = filesys_open (fn);
-  if (f == NULL) return -1; */
   return process_execute(file_name);
 
 }
@@ -214,7 +206,7 @@ filesize(int fd){
 
 int
 read(int fd, void *buffer, unsigned size){
-/*  int i, result;
+  int i, result;
   bool val_org;
 
   //if(fd == 1) return -1;
@@ -252,45 +244,11 @@ read(int fd, void *buffer, unsigned size){
     lock_release(&file_lock);
     lock_release(&read_lock);
     return result;
-*/
-
-  valid_vaddr(buffer);
-  if ( fd == 1 )
-    return 0;
-  int retval;
-  int i;
-  lock_acquire (&file_lock);
-
-  if( fd == 0 ) // read in console
-  {
-    //printf("\nwrite in console!");
-    for (i=0; i<size; ++i)
-      {
-        *(((char *) buffer) + i) = input_getc();
-      }
-    lock_release (&file_lock);
-    return size;
-  }
-
-  else
-  {
-    // check validity
-    struct file_elem *felem = find_file(fd);
-    if( !felem )
-    {
-      lock_release (&file_lock);
-      return 0;
-    }
-
-    retval = file_read (felem->file, buffer, size);
-    lock_release (&file_lock);
-    return retval;
-  }
 }
 
 int
 write(int fd, const void *buffer, unsigned size){
-/*  int result;
+  int result;
   if(fd==0){
     return -1;
   }
@@ -314,45 +272,7 @@ write(int fd, const void *buffer, unsigned size){
     val = false;
     lock_release(&file_lock);
     return result; 
-*/
-  //printf("In the Write func : %d\n",1);
-  valid_vaddr(buffer);
-  if ( fd == 0 )
-    return 0;
-  
 
-  int retval;
-
-  //printf("In the Write func : %d\n",2);
-  lock_acquire (&file_lock);
-  if( fd == 1 ) // write in console
-  {
-
-    //printf("In the Write func : %d\n",3);
-    //printf("\nwrite in console!");
-    putbuf ((const char *) buffer, (size_t) size);
-    lock_release (&file_lock);
-    return size;
-  }
-  else
-  {
-  //printf("In the Write func : %d\n",4);
-    struct file_elem *felem = find_file(fd);
-    if( !felem )
-    {
-  //printf("In the Write func : %d\n",5);
-      lock_release (&file_lock);
-      return 0;
-    } 
-    retval = file_write (felem->file, buffer, size);
-
-    
-  
-    lock_release (&file_lock);
-
-    return retval;
-
-  }
 }
 
 void

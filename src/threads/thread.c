@@ -391,24 +391,6 @@ thread_exit (void)
   //list_remove(&thread_current()->elem_for_parent);
   //thread_current()->parent->child_exit_status = thread_current()->exit_status;
   sema_up (&curr->child_exit);
-/*
-  if( curr->exec_file )
-  {
-    file_allow_write (curr->exec_file);
-    file_close (curr->exec_file);
-  }
-
-  struct file_elem *felem;
-  struct list_elem *e;
-  for (e = list_begin (&curr->file_list); e != list_end (&curr->file_list); )
-    {
-      felem = list_entry (e, struct file_elem, f_elem);
-      e = list_next (e);
-      file_close (felem->file);
-      list_remove (&felem->f_elem);
-      free (felem);
-    }
-*/
   sema_down (&thread_current()->child_before_exit);
 #endif
 
@@ -603,7 +585,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t-> wc_tid = NULL;
 
   t-> parent = running_thread();
-  t-> exit_status = 1;
+  t-> exit_status = 0;
 
 
   list_init(&t->file_list);
