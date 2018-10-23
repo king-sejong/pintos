@@ -15,11 +15,17 @@ static void syscall_handler (struct intr_frame *);
 static void exit_proc(int);
 static void valid_vaddr(const void *);
 static void* exec_proc(char *);
+static struct lock file_lock;
+static struct lock read_lock;
+static bool val;
 
 void
 syscall_init (void) 
 {
   intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
+  lock_init(&file_lock);
+  lock_init(&read_lock);
+  val = false;
 }
 
 static void
@@ -107,7 +113,6 @@ valid_vaddr(const void * va){
   // Assert va != NULL                                                                            
   // Assert va in user_memory                                                                     
   // Assert thread_current() page_dir + vaddr is valid 
-  // printf("debugging_valid_vaddr : %c\n", (char *) va);
 
   if ( !va || !is_user_vaddr(va)){
     exit(-1);
@@ -209,34 +214,145 @@ filesize(int fd){
 
 int
 read(int fd, void *buffer, unsigned size){
-  int i;
+/*  int i, result;
+  bool val_org;
+
+  //if(fd == 1) return -1;
+  
+  lock_acquire(&read_lock);
+  val_org = val;
+  val = true;
+  
+  if (!val_org || !val){
+    lock_acquire(&file_lock);
+  }
+  lock_release(&read_lock);
+
   if(fd == 0){
     for( i=0;i<size;i++){
       *(char *)(buffer+i)=input_getc();
-      return size;
     }
+    lock_acquire(&read_lock);
+    val = false;
+    lock_release(&file_lock);
+    lock_release(&read_lock);
+    result = size;
+    goto done;
   }
 
   struct file_elem *felem= find_file(fd);
   if(felem==NULL)
-      return -1;
-  return file_read(felem->file, buffer, size);
+    result = -1;
+  else 
+    result =  file_read(felem->file, buffer, size);
+
+  done :
+    lock_acquire(&read_lock);
+    val = false;
+    lock_release(&file_lock);
+    lock_release(&read_lock);
+    return result;
+*/
+
+  valid_vaddr(buffer);
+  if ( fd == 1 )
+    return 0;
+  int retval;
+  int i;
+  lock_acquire (&file_lock);
+
+  if( fd == 0 ) // read in console
+  {
+    //printf("\nwrite in console!");
+    for (i=0; i<size; ++i)
+      {
+        *(((char *) buffer) + i) = input_getc();
+      }
+    lock_release (&file_lock);
+    return size;
+  }
+
+  else
+  {
+    // check validity
+    struct file_elem *felem = find_file(fd);
+    if( !felem )
+    {
+      lock_release (&file_lock);
+      return 0;
+    }
+
+    retval = file_read (felem->file, buffer, size);
+    lock_release (&file_lock);
+    return retval;
+  }
 }
 
 int
 write(int fd, const void *buffer, unsigned size){
-  if(fd==0)
+/*  int result;
+  if(fd==0){
     return -1;
+  }
+
+  val = false;
+  lock_acquire(&file_lock);
 
   if (fd == 1) {
     putbuf(buffer, size);
-    return size;
+    result = size;
+    goto done;
   }
 
   struct file_elem *felem= find_file(fd);
   if(felem==NULL)
-    return -1;
-  return file_write(felem->file, buffer, size); 
+    result = -1;
+  else 
+    result =  file_write(felem->file, buffer, size);
+
+  done:
+    val = false;
+    lock_release(&file_lock);
+    return result; 
+*/
+  //printf("In the Write func : %d\n",1);
+  valid_vaddr(buffer);
+  if ( fd == 0 )
+    return 0;
+  
+
+  int retval;
+
+  //printf("In the Write func : %d\n",2);
+  lock_acquire (&file_lock);
+  if( fd == 1 ) // write in console
+  {
+
+    //printf("In the Write func : %d\n",3);
+    //printf("\nwrite in console!");
+    putbuf ((const char *) buffer, (size_t) size);
+    lock_release (&file_lock);
+    return size;
+  }
+  else
+  {
+  //printf("In the Write func : %d\n",4);
+    struct file_elem *felem = find_file(fd);
+    if( !felem )
+    {
+  //printf("In the Write func : %d\n",5);
+      lock_release (&file_lock);
+      return 0;
+    } 
+    retval = file_write (felem->file, buffer, size);
+
+    
+  
+    lock_release (&file_lock);
+
+    return retval;
+
+  }
 }
 
 void
@@ -266,3 +382,4 @@ close(int fd){
     list_remove(&felem->f_elem);
   }
 }
+

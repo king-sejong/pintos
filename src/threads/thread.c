@@ -13,6 +13,7 @@
 #include "threads/vaddr.h"
 #ifdef USERPROG
 #include "userprog/process.h"
+#include "filesys/file.h"
 #endif
 
 /* Random value for struct thread's `magic' member.
@@ -241,6 +242,7 @@ thread_create (const char *name, int priority,
 
   list_push_back (&running_thread()->child_proc, &t->elem_for_parent);
   t->running = false;
+  t->exec_file = NULL;
   //printf("checkpoint1 %d\n",running_thread()->tid == t->tid);
   //printf("checkpoint2 child_tid: %p\n",t);
 
@@ -373,7 +375,7 @@ void
 thread_exit (void) 
 {
   ASSERT (!intr_context ());
-
+  struct thread * curr = thread_current();
 #ifdef USERPROG
   process_exit ();
 #endif
@@ -388,7 +390,25 @@ thread_exit (void)
 #ifdef USERPROG
   //list_remove(&thread_current()->elem_for_parent);
   //thread_current()->parent->child_exit_status = thread_current()->exit_status;
-  sema_up (&thread_current()->child_exit);
+  sema_up (&curr->child_exit);
+/*
+  if( curr->exec_file )
+  {
+    file_allow_write (curr->exec_file);
+    file_close (curr->exec_file);
+  }
+
+  struct file_elem *felem;
+  struct list_elem *e;
+  for (e = list_begin (&curr->file_list); e != list_end (&curr->file_list); )
+    {
+      felem = list_entry (e, struct file_elem, f_elem);
+      e = list_next (e);
+      file_close (felem->file);
+      list_remove (&felem->f_elem);
+      free (felem);
+    }
+*/
   sema_down (&thread_current()->child_before_exit);
 #endif
 

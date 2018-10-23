@@ -270,6 +270,26 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
+
+
+  if( curr->exec_file )
+  {
+
+    file_allow_write (curr->exec_file);
+    file_close (curr->exec_file);
+  }
+
+  struct file_elem *felem;
+  struct list_elem *e;
+  for (e = list_begin (&curr->file_list); e != list_end (&curr->file_list); )
+    {
+      felem = list_entry (e, struct file_elem, f_elem);
+      e = list_next (e);
+      file_close (felem->file);
+      list_remove (&felem->f_elem);
+      free (felem);
+    }
+
 }
 
 /* Sets up the CPU for running user code in the current
@@ -392,12 +412,16 @@ load (const char *file_name, void (**eip) (void), void **esp)
   file = filesys_open (file_name_r);
   //free(file_name_r);
   
+
   if (file == NULL) 
     {
       printf ("load: %s: open failed\n", file_name_r);
       goto done; 
     }
-
+  //printf("load_checkpoint1 \n");
+  
+  t->exec_file = file;
+  file_deny_write(file);
   /* Read and verify executable header. */
   if (file_read (file, &ehdr, sizeof ehdr) != sizeof ehdr
       || memcmp (ehdr.e_ident, "\177ELF\1\1\1", 7)
@@ -483,7 +507,6 @@ load (const char *file_name, void (**eip) (void), void **esp)
 
  done:
   /* We arrive here whether the load is successful or not. */
-  file_close (file);
   return success;
 }
 

@@ -114,6 +114,7 @@ struct thread
     struct list_elem elem_for_parent;  // used in parent thread child_proc list
     tid_t wc_tid; // waiting child tid 
     bool running; // thread running as child.
+    struct file* exec_file;
     struct list file_list;
     int fd_count;
 #endif
