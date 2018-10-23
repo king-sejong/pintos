@@ -39,6 +39,7 @@ syscall_handler (struct intr_frame *f)
       break;
     case SYS_EXEC:
       valid_vaddr(esp+1);
+      valid_vaddr(*(esp+1));
       f->eax = exec((const char*) *(esp+1));
       break;
     case SYS_WAIT:
@@ -132,7 +133,7 @@ exit (int status){
   struct thread *t = thread_current();
   
   t -> exit_status = status;
-  t -> used = true;
+  //t -> running = false;
   printf("%s: exit(%d)\n", thread_name(), status);
   thread_exit();
 }
@@ -140,13 +141,13 @@ exit (int status){
 pid_t
 exec (const char *file_name){
 
-
+/*
   char * fn = malloc(strlen(file_name)+1);
   char * next;
   strlcpy(fn, file_name, strlen(file_name)+1);
   fn = strtok_r(fn, " ", &next);
   struct file* f = filesys_open (fn);
-  if (f == NULL) return -1; 
+  if (f == NULL) return -1; */
   return process_execute(file_name);
 
 }
@@ -256,8 +257,12 @@ tell(int fd){
 
 void
 close(int fd){
+
+  if(fd<2) return;
   struct file_elem *felem= find_file(fd);
-  if(felem==NULL)
-    return -1;
-  return file_close(felem->file);
+  if(felem!=NULL){
+  
+    file_close(felem->file);
+    list_remove(&felem->f_elem);
+  }
 }

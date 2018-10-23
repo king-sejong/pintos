@@ -4,6 +4,7 @@
 #include <debug.h>
 #include <list.h>
 #include <stdint.h>
+#include "threads/synch.h"
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -104,11 +105,15 @@ struct thread
     uint32_t *pagedir;                  /* Page directory. */
     struct thread * parent; 
     struct list child_proc; // list of child process.
-    struct semaphore *child_lock; // lock which is used by children.
+
+    struct semaphore child_lock; // lock which is used by children.
+    struct semaphore child_exit;
+    struct semaphore child_before_exit;
     int exit_status; // -1 exit by error, 0 exit by program normal exit.
+    int child_exit_status; // child exit status.
     struct list_elem elem_for_parent;  // used in parent thread child_proc list
     tid_t wc_tid; // waiting child tid 
-    bool used; // thread used.
+    bool running; // thread running as child.
     struct list file_list;
     int fd_count;
 #endif

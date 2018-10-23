@@ -240,8 +240,10 @@ thread_create (const char *name, int priority,
 
 
   list_push_back (&running_thread()->child_proc, &t->elem_for_parent);
-  t->used = false;
-  
+  t->running = false;
+  //printf("checkpoint1 %d\n",running_thread()->tid == t->tid);
+  //printf("checkpoint2 child_tid: %p\n",t);
+
   /* Stack frame for kernel_thread(). */
   kf = alloc_frame (t, sizeof *kf);
   kf->eip = NULL;
@@ -375,7 +377,7 @@ thread_exit (void)
 #ifdef USERPROG
   process_exit ();
 #endif
- /*
+  /*
   while(!list_empty(&thread_current()->child_proc)){
       struct thread *c = list_entry (list_pop_front(&thread_current()->child_proc), struct thread, elem_for_parent);
       free(c);
@@ -383,6 +385,14 @@ thread_exit (void)
   /* Just set our status to dying and schedule another process.
      We will be destroyed during the call to schedule_tail(). */
   intr_disable ();
+#ifdef USERPROG
+  //list_remove(&thread_current()->elem_for_parent);
+  //thread_current()->parent->child_exit_status = thread_current()->exit_status;
+  sema_up (&thread_current()->child_exit);
+  sema_down (&thread_current()->child_before_exit);
+#endif
+
+
   thread_current ()->status = THREAD_DYING;
   schedule ();
   NOT_REACHED ();
@@ -568,6 +578,8 @@ init_thread (struct thread *t, const char *name, int priority)
   
   list_init(&t->child_proc);
   sema_init(&t->child_lock, 0);
+  sema_init(&t->child_exit, 0);
+  sema_init(&t->child_before_exit, 0);
   t-> wc_tid = NULL;
 
   t-> parent = running_thread();
